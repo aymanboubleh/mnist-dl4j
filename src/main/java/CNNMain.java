@@ -84,7 +84,8 @@ public class CNNMain {
         StatsStorage statsStorage = new InMemoryStatsStorage();
         uiServer.attach(statsStorage);
         model.setListeners(new StatsListener(statsStorage));
-
+        //Remaruqe: Il faut placer le dossier du dataset dans le dossier home de l'utilisateur courant
+        //C:/Users/User
         String path = System.getProperty("user.home") + "/mnist_png";
         File trainFolder = new File(path + "/training");
         FileSplit fileSplitTrain = new FileSplit(trainFolder, NativeImageLoader.ALLOWED_FORMATS, new Random(seed));
@@ -114,12 +115,12 @@ public class CNNMain {
         DataSetIterator dataSetIteratorEval = new RecordReaderDataSetIterator(recordReaderEval, batchSize, 1, outputSize);
         dataSetIteratorEval.setPreProcessor(scaler);
         Evaluation evaluation = new Evaluation();
-        while (dataSetIteratorEval.hasNext()){
-                DataSet dataSet = dataSetIteratorEval.next();
-                INDArray features = dataSet.getFeatures();
-                INDArray targetLabels = dataSet.getLabels();
-                INDArray predictedLabels = model.output(features);
-                evaluation.eval(predictedLabels,targetLabels);
+        while (dataSetIteratorEval.hasNext()) {
+            DataSet dataSet = dataSetIteratorEval.next();
+            INDArray features = dataSet.getFeatures();
+            INDArray targetLabels = dataSet.getLabels();
+            INDArray predictedLabels = model.output(features);
+            evaluation.eval(predictedLabels, targetLabels);
         }
         System.out.println("--------------------- RESULTAT -----------------------");
         System.out.println(evaluation.stats());
